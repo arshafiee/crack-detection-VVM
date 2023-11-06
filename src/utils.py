@@ -54,7 +54,6 @@ def check_videos_atts(cap_ref, cap_tst):
                                          f'number of frames of reference ({ref_fnum}) and test ({tst_fnum}) videos'
                                          f' do not match!')
 
-    #TODO: not sure about this one
     # video format
     ref_fourcc = int(cap_ref.get(cv2.CAP_PROP_FOURCC))
     ref_fourcc = chr(ref_fourcc & 0xff) + chr((ref_fourcc >> 8) & 0xff) + chr((ref_fourcc >> 16) & 0xff) + chr(
