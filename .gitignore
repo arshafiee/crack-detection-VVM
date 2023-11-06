@@ -1,0 +1,12 @@
+# created by virtualenv automatically
+bin/
+build/
+data/
+dist/
+lib/
+share/
+videos/
+pyvenv.cfg
+.idea/
+__pycache__/
+init_src/
