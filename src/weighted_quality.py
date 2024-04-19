@@ -107,14 +107,14 @@ class WeightedQuality:
 
         # putting text on the frames
         half_width = gray_ref_frame.shape[1] // 2
-        cv2.putText(gray_tst_frame, 'Test frame', (half_width, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2,
-                    cv2.LINE_AA)
-        cv2.putText(gray_ref_frame, 'Reference frame', (half_width, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255),
-                    2, cv2.LINE_AA)
-        cv2.putText(frame_with_cracks, 'Test frame + highlighted defects', (half_width, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (255, 255, 255), 2, cv2.LINE_AA)
-        cv2.putText(gray_crack_mask, 'highlighted defects', (half_width, 30), cv2.FONT_HERSHEY_SIMPLEX,
-                    1, (255, 255, 255), 2, cv2.LINE_AA)
+        cv2.putText(gray_tst_frame, 'Test frame', (half_width - 50, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255),
+                    1, cv2.LINE_AA)
+        cv2.putText(gray_ref_frame, 'Reference frame', (half_width - 75, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(frame_with_cracks, 'Test frame + highlighted defects', (half_width - 100, 20),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
+        cv2.putText(gray_crack_mask, 'highlighted defects', (half_width - 75, 20), cv2.FONT_HERSHEY_SIMPLEX,
+                    0.5, (255, 255, 255), 1, cv2.LINE_AA)
 
         lower_hf_frame = np.concatenate((gray_crack_mask, frame_with_cracks), axis=1)
         upper_hf_frame = np.concatenate((gray_ref_frame, gray_tst_frame), axis=1)
