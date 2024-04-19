@@ -1,12 +1,24 @@
-# Crack Detection for Objective Quality Assessment of Rendered 3D Textured Meshes
+# Perceptual Crack Detection for Rendered 3D Textured Meshes
+Software release of the "Perceptual Crack Detection for Rendered 3D Textured Meshes" QoMEX 2024 paper.
 
-## Usage: main.py
-To compute the raw quality score, the new quality score, and to generate a video highlighting the geometric defects, you can run the following piece of code with the following arguments.
+## Documentation
+Please refer to our [published paper](), where we thoroughly explain the proposed PCD method.
+
+## Installation
+```
+cd path/to/this/repo
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+## Usage
+To compute the raw quality score, the new quality score, and to generate a video highlighting the crack artifacts, you can run the following command with the following arguments:
 
 `required arguments`:
 
 * `--ref_add` reference video path, string,
-* `--tst_add` test video path, string,
+* `--tst_add` test video path, string.
 
 `optional arguments`:
 * `-h` or `--help`: shows the help message and exits,
@@ -38,7 +50,7 @@ A sample frame of the generated video:
 
 ![Alt text](/img/sample_frame.png)
 
-`Aknowledgement`:
+## Aknowledgement
 
 The code for IW-SSIM and SSIM were adapted from the following references, respectively:
 
