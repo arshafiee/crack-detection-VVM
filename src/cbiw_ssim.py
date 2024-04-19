@@ -6,12 +6,13 @@
 # arXiv 2022. https://arxiv.org/abs/2208.14818.
 
 
-import torch
-from piq.utils import _validate_input, _reduce
-from piq.functional import binomial_filter1d, rgb2yiq
-from piq.iw_ssim import _pyr_step, _information_content, _ssim_per_channel
-from typing import Union, Optional
 import math
+from typing import Optional, Union
+
+import torch
+from piq.functional import binomial_filter1d, rgb2yiq
+from piq.iw_ssim import _information_content, _pyr_step, _ssim_per_channel
+from piq.utils import _reduce, _validate_input
 
 
 def gaussian_filter(kernel_size: int, sigma: float, device: Optional[str] = None,

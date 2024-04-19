@@ -5,7 +5,6 @@
 
 import numpy
 from scipy import signal
-from scipy import ndimage
 
 
 def ssim(img1, img2, cs_map=False):
