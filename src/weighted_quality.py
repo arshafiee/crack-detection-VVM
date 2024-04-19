@@ -16,13 +16,14 @@
 # Please email a5shafie@uwaterloo.ca for inquiries.
 
 import cv2
-import torch
 import numpy as np
-from scipy.signal.windows import gaussian
+import torch
 from scipy import stats
-from ssim import ssim
+from scipy.signal.windows import gaussian
+
 from cbiw_ssim import cb_information_weighted_ssim
-from utils import check_videos_atts, check_frames_atts
+from ssim import ssim
+from utils import check_frames_atts, check_videos_atts
 
 
 class WeightedQuality:
@@ -215,7 +216,7 @@ class WeightedQuality:
             pad_y = (crp_ref_frame.shape[0] - ssim_map.shape[0]) // 2
             pad_x = (crp_ref_frame.shape[1] - ssim_map.shape[1]) // 2
             crack_enhanced_ssim = ssim_map * eff_crack_map[pad_y:-pad_y, pad_x:-pad_x] \
-                                  / np.sum(eff_crack_map[pad_y:-pad_y, pad_x:-pad_x])
+                / np.sum(eff_crack_map[pad_y:-pad_y, pad_x:-pad_x])
             enh_quality_score = np.sum(crack_enhanced_ssim)
 
         elif self.method == 'IW-SSIM':

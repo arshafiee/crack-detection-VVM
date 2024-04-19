@@ -16,8 +16,8 @@
 # Please email a5shafie@uwaterloo.ca for inquiries.
 
 import argparse
-from weighted_quality import WeightedQuality
 
+from weighted_quality import WeightedQuality
 
 if __name__ == '__main__':
 
@@ -39,6 +39,3 @@ if __name__ == '__main__':
     quality_class = WeightedQuality(method=args.method, skip_fr=args.skip_fr, out_fps=args.out_fps, no_vid=args.no_vid,
                                     no_rqs=args.no_rqs)
     quality_class.test(ref_add=args.ref_add, tst_add=args.tst_add)
-
-
-

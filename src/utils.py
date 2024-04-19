@@ -84,8 +84,3 @@ def check_frames_atts(ref_frame, tst_frame):
         raise InvalidVideoAttributeError('bit depth',
                                          f'bit depth of reference ({ref_bd}) and test ({tst_bd}) videos'
                                          f' do not match!')
-
-
-
-
-
