@@ -17,7 +17,7 @@
 
 import argparse
 
-from weighted_quality import WeightedQuality
+from src.weighted_quality import WeightedQuality
 
 if __name__ == '__main__':
 

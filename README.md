@@ -33,7 +33,7 @@ Please note that the height and width of the output video frames are two times t
 The following `Example` operates on one out of every 30 consecutive frames of the reference and test videos to compute the raw and enhanced SSIM quality score and to generate a video with 5.0 frame rate that highlights the geometric defects:
 ```
 cd path_to_this_repo
-python3 src/main.py \
+python3 main.py \
 --ref_add data/orbiter_space_shutter_C0-L5_qp0_qt0.mp4 \
 --tst_add data/orbiter_space_shutter_dec0.20_qp9_qt8_cqlevel63.mp4 \
 --skip_fr 30 \
