@@ -30,21 +30,21 @@ To compute the raw quality score, the new quality score, and to generate a video
 
 Please note that the height and width of the output video frames are two times the height and width of the input video frames.
 
-The following `Example` operates on one out of every 30 consecutive frames of the reference and test videos to compute the raw and enhanced SSIM quality score and to generate a video with 5.0 frame rate that highlights the geometric defects:
+The following `Example` operates on one out of every 5 consecutive frames of the reference and test videos to compute the raw and enhanced SSIM quality score and to generate a video with 5.0 frame rate that highlights the crack artifacts:
 ```
 cd path_to_this_repo
 python3 main.py \
---ref_add data/orbiter_space_shutter_C0-L5_qp0_qt0.mp4 \
---tst_add data/orbiter_space_shutter_dec0.20_qp9_qt8_cqlevel63.mp4 \
---skip_fr 30 \
+--ref_add data/statue_Ref.mp4 \
+--tst_add data/statue_simpL6_qp8_qt6_decompJPEG_2048x2048_Q90.mp4 \
+--skip_fr 5 \
 --method SSIM 
 ```
 
 Output of the preceding example:
 
-`Raw quality score: 0.9470075559485853`
+`Raw quality score: 0.9059885119062726`
 
-`New quality score: 0.12092643017352467`
+`New quality score: 0.11615714537909715`
 
 A sample frame of the generated video:
 
