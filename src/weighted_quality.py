@@ -21,9 +21,9 @@ import torch
 from scipy import stats
 from scipy.signal.windows import gaussian
 
-from cbiw_ssim import cb_information_weighted_ssim
-from ssim import ssim
-from utils import check_frames_atts, check_videos_atts
+from .cbiw_ssim import cb_information_weighted_ssim
+from .ssim import ssim
+from .utils import check_frames_atts, check_videos_atts
 
 
 class WeightedQuality:
