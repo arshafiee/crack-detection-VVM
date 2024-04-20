@@ -15,6 +15,8 @@
 #
 # Please email a5shafie@uwaterloo.ca for inquiries.
 
+from typing import Tuple
+
 import cv2
 import numpy as np
 import torch
@@ -28,8 +30,19 @@ from .utils import check_frames_atts, check_videos_atts
 
 class WeightedQuality:
 
-    def __init__(self, method, skip_fr, out_fps, no_vid, no_rqs):
+    def __init__(self, method: str, skip_fr: int, out_fps: float, no_vid: bool, no_rqs: bool) -> None:
+        """
+        Instantiates a WeightedQuality class object with given parameters to apply crack detection
+        and quality assessment.
 
+        Args:
+            method (str): initial quality assessment method to be enhanced by the weight map.
+                Options: "lumaPSNR", "SSIM", "IW-SSIM"!
+            skip_fr (int): number of consecutive frames to skip in each interval when generating the outputs!
+            out_fps (float): desired frame rate (fps) for the output video! ignored when "no_vid" is True.
+            no_vid (bool): flag to disable generating the output video!
+            no_rqs (bool): flag to disable computing the raw quality score!
+        """
         self.method = method
         self.skip_fr = skip_fr
         self.out_fps = out_fps
@@ -47,8 +60,16 @@ class WeightedQuality:
         self._sigmoid_threshold = 0.25
         self._morph_kernel = np.ones((5, 5))
 
-    def _find_contrast_map(self, img):
+    def _find_contrast_map(self, img: np.ndarray) -> np.ndarray:
+        """
+        Computes the contrast map for an input frame.
 
+        Args:
+            img (np.ndarray): the input frame.
+
+        Returns:
+            np.ndarray: contrast mao of the input frame.
+        """
         img = np.double(img)
 
         gauss_1d = gaussian(self._gaussian_size, self._gaussian_std)
@@ -63,8 +84,17 @@ class WeightedQuality:
 
         return sigma
 
-    def _apply_piecewise_sigmoid(self, img, threshold):
+    def _apply_piecewise_sigmoid(self, img: np.ndarray, threshold: float) -> np.ndarray:
+        """
+        Applies piecewise sigmoid with a threshold to the input frame.
 
+        Args:
+            img (np.ndarray): the input frame.
+            threshold (float): the threshold to use in the piecewise sigmoid function.
+
+        Returns:
+            np.ndarray: the resulting frame.
+        """
         result_img = img.copy()
         sigmoid_img = 1 / (1 + np.exp(-1 / threshold * (img - threshold)))
         result_img[img <= threshold] = 0.0
@@ -72,8 +102,19 @@ class WeightedQuality:
 
         return result_img
 
-    def _find_crack_map(self, raw_frame_ref, raw_frame_dis):
+    def _find_crack_map(self, raw_frame_ref: np.ndarray, raw_frame_dis: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Finds crack map of the input distorted frame given its source frame.
 
+        Args:
+            raw_frame_ref (np.ndarray): input reference frame.
+            raw_frame_dis (np.ndarray): input distorted frame.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]:
+                (0) the crack map of the distorted frame,
+                (1) the effective crack map of the distorted frame to be integrated with a given raw IQA method.
+        """
         frame_ref = cv2.cvtColor(raw_frame_ref, cv2.COLOR_BGR2GRAY)
         db_frame_ref = np.double(frame_ref) / 255.0
         frame_dis = cv2.cvtColor(raw_frame_dis, cv2.COLOR_BGR2GRAY)
@@ -91,8 +132,16 @@ class WeightedQuality:
 
         return db_frame_final, db_eff_crack_map
 
-    def _generate_video_frame(self, ref_frame, tst_frame, crack_mask):
+    def _generate_video_frame(self, ref_frame: np.ndarray, tst_frame: np.ndarray, crack_mask: np.ndarray) -> None:
+        """
+        Generates frames of a video which contains the reference and distorted frames, the crack map, and
+        the highlighted distorted frame with crack artifacts.
 
+        Args:
+            ref_frame (np.ndarray): input reference frame.
+            tst_frame (np.ndarray): input distorted frame.
+            crack_mask (np.ndarray): crack map of the distorted frame.
+        """
         # dilating the mask for better visualization
         crack_mask = cv2.dilate(crack_mask, np.ones((3, 3)))
         crack_mask = np.round(crack_mask * 255.0).astype(np.uint8)
@@ -121,8 +170,19 @@ class WeightedQuality:
         new_frame = np.concatenate((upper_hf_frame, lower_hf_frame), axis=0)
         self.video_file.write(cv2.cvtColor(new_frame, cv2.COLOR_RGB2BGR))
 
-    def _background_floor_mask(self, ref_img, tst_img, color):
+    def _background_floor_mask(self, ref_img: np.ndarray, tst_img: np.ndarray, color: int) -> np.ndarray:
+        """
+        Finds background/floor mask given the background uniform color value. To be used to find the cropping positions
+        in the reference and distorted frames.
 
+        Args:
+            ref_img (np.ndarray): input reference frame.
+            tst_img (np.ndarray): input distorted frame.
+            color (int): background uniform color value.
+
+        Returns:
+            np.ndarray: background mask of both reference and distorted frames.
+        """
         background_img = np.ones_like(ref_img, dtype=np.uint8) * color
 
         dif_frame_ref = abs(ref_img - background_img)
@@ -139,8 +199,19 @@ class WeightedQuality:
 
         return mask
 
-    def _crop_bounding_box(self, ref_img, tst_img):
+    def _crop_bounding_box(self, ref_img: np.ndarray, tst_img: np.ndarray) -> Tuple[int, int, int, int]:
+        """
+        Finds cropping coordinates for both reference and distorted frames after computing the background/floor mask
+        (in case of a uniform background) or the edge map (in case of a non-uniform background).
 
+        Args:
+            ref_img (np.ndarray): input reference frame.
+            tst_img (np.ndarray): input distorted frame.
+
+        Returns:
+            Tuple[int, int, int, int]: cropping coordinates:
+                (0) left x, (1) right x, (2) top y, (3) bottom y.
+        """
         ref_img = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)
         tst_img = cv2.cvtColor(tst_img, cv2.COLOR_BGR2GRAY)
 
@@ -186,8 +257,28 @@ class WeightedQuality:
 
         return x1, x2, y1, y2
 
-    def _compute_enhanced_quality_score(self, ref_frame, tst_frame, crp_coords, eff_crack_map):
+    def _compute_enhanced_quality_score(self, ref_frame: np.ndarray,
+                                        tst_frame: np.ndarray,
+                                        crp_coords: Tuple[int, int, int, int],
+                                        eff_crack_map: np.ndarray) -> Tuple[np.float64, np.float64]:
+        """
+        Computes raw and enhanced quality score given the initial IQA method, input frames, and the effective crack map
+        of the distorted frame.
 
+        Args:
+            ref_frame (np.ndarray): input reference frame.
+            tst_frame (np.ndarray): input distorted frame.
+            crp_coords (Tuple[int, int, int, int]): cropping coordinates
+            eff_crack_map (np.ndarray): effective crack map
+
+        Raises:
+            ValueError: Invalid initial quality assessment method
+
+        Returns:
+            Tuple[np.float64, np.float64]:
+                (0) raw quality score,
+                (1) enhanced quality score after integration with the crack map.
+        """
         raw_quality_score = None
 
         if self.method == 'lumaPSNR':
@@ -244,8 +335,21 @@ class WeightedQuality:
 
         return raw_quality_score, enh_quality_score
 
-    def test(self, ref_add, tst_add):
+    def test(self, ref_add: str, tst_add: str) -> Tuple[np.float64, np.float64]:
+        """
+        Given the input reference and distorted video paths, reads the frames one by one, computes the crack map for
+        selected frames (based on skip_fr), generates a frame highlighting crack artifacts in the distorted frame,
+        and computes the raw and enhanced quality scores.
 
+        Args:
+            ref_add (str): reference video path.
+            tst_add (str): distorted video path.
+
+        Returns:
+            Tuple[np.float64, np.float64]:
+                (0) raw quality score of the distorted video,
+                (1) enhanced quality score of the distorted video.
+        """
         cap_ref = cv2.VideoCapture(ref_add)
         cap_tst = cv2.VideoCapture(tst_add)
 

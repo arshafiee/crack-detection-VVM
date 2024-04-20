@@ -16,16 +16,17 @@
 # Please email a5shafie@uwaterloo.ca for inquiries.
 
 import cv2
+import numpy as np
 
 
 class InvalidVideoAttributeError(Exception):
-    def __init__(self, attribute_name, reason):
+    def __init__(self, attribute_name: str, reason: str) -> None:
         self.attribute_name = attribute_name
         self.reason = reason
         super().__init__(f"Invalid video attribute '{attribute_name}': {reason}")
 
 
-def check_videos_atts(cap_ref, cap_tst):
+def check_videos_atts(cap_ref: cv2.VideoCapture, cap_tst: cv2.VideoCapture) -> None:
 
     if not cap_ref.isOpened():
         raise FileNotFoundError("Error opening reference video stream.")
@@ -67,7 +68,7 @@ def check_videos_atts(cap_ref, cap_tst):
                                          f' do not match!')
 
 
-def check_frames_atts(ref_frame, tst_frame):
+def check_frames_atts(ref_frame: np.ndarray, tst_frame: np.ndarray) -> None:
 
     # num channels
     ref_nc = ref_frame.shape[2] if len(ref_frame.shape) == 3 else 1
