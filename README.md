@@ -2,7 +2,7 @@
 Software release of the "Perceptual Crack Detection for Rendered 3D Textured Meshes" QoMEX 2024 paper.
 
 ## Documentation
-Please refer to our [published paper](), where we thoroughly explain the proposed PCD method.
+Please refer to our [published paper](https://arxiv.org/abs/2405.06143), where we thoroughly explain the proposed PCD method.
 
 ## Installation
 ```
