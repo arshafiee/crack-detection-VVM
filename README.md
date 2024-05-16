@@ -50,6 +50,9 @@ A sample frame of the generated video:
 
 ![Alt text](/img/sample_frame.png)
 
+## Citation
+If you use any part of this code or data in your research, please cite our [publication](https://arxiv.org/abs/2405.06143).
+
 ## Aknowledgement
 
 The code for IW-SSIM and SSIM were adapted from the following references, respectively:
